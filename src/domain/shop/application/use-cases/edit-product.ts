@@ -8,7 +8,7 @@ interface EditProductUseCaseRequest {
   productId: string
   userId: string
   name: string
-  quantity: number
+  stock: number
 }
 
 type EditProductUseCaseResponse = Either<
@@ -25,7 +25,7 @@ export class EditProductUseCase {
     productId,
     userId,
     name,
-    quantity,
+    stock,
   }: EditProductUseCaseRequest): Promise<EditProductUseCaseResponse> {
     const product = await this.productsRepository.findById(productId)
 
@@ -38,7 +38,7 @@ export class EditProductUseCase {
     }
 
     product.name = name
-    product.quantity = quantity
+    product.stock = stock
 
     await this.productsRepository.save(product)
 

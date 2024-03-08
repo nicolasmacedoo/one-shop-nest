@@ -7,9 +7,11 @@ import { ResourceNotFoundError } from './errors/resource-not-found-error'
 import { OrderItemsList } from '../../enterprise/entities/order-items-list'
 import { NotAllowedError } from './errors/not-allowed-error'
 import { OrderItemsRepository } from '../repositories/order-items-repository'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 interface EditOrderUseCaseRequest {
   userId: string
+  clientId: string
   orderId: string
   items: {
     id: string
@@ -33,6 +35,7 @@ export class EditOrderUseCase {
 
   async execute({
     userId,
+    clientId,
     orderId,
     items,
   }: EditOrderUseCaseRequest): Promise<EditOrderUseCaseResponse> {
@@ -76,8 +79,7 @@ export class EditOrderUseCase {
 
     order.items = orderItemstList
 
-    // quando possuir cliente na order
-    // order.cliente = cliente (que recebe nos parametros)
+    order.clientId = new UniqueEntityID(clientId)
 
     await this.orderRepository.save(order)
 

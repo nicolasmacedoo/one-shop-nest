@@ -24,13 +24,13 @@ describe('Edit Product', () => {
     await sut.execute({
       userId: 'user-1',
       name: 'Produto teste',
-      quantity: 10,
+      stock: 10,
       productId: newProduct.id.toString(),
     })
 
     expect(inMemoryProductsRepository.items[0]).toMatchObject({
       name: 'Produto teste',
-      quantity: 10,
+      stock: 10,
     })
   })
 
@@ -45,7 +45,7 @@ describe('Edit Product', () => {
     const result = await sut.execute({
       userId: 'user-2',
       name: 'Produto teste',
-      quantity: 10,
+      stock: 10,
       productId: newProduct.id.toString(),
     })
 

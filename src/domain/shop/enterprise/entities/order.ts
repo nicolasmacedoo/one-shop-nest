@@ -22,6 +22,11 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.clientId
   }
 
+  set clientId(clientId: UniqueEntityID) {
+    this.props.clientId = clientId
+    this.touch()
+  }
+
   get items(): OrderItemsList {
     return this.props.items
   }

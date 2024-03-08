@@ -89,7 +89,7 @@ describe('Create Order', () => {
 
   it('should not be able to create a order with a product that does not have enough quantity', async () => {
     const product = makeProduct({
-      quantity: 1,
+      stock: 1,
     })
 
     await inMemoryProductsRepository.create(product)

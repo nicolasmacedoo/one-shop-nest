@@ -52,7 +52,7 @@ export class CreateOrderUseCase {
         )
       }
 
-      if (product.quantity < item.quantity) {
+      if (product.stock < item.quantity) {
         return left(
           new InsuficientItemQuantityError(
             `Insuficient ${product.name} quantity`,
@@ -60,7 +60,7 @@ export class CreateOrderUseCase {
         )
       }
 
-      product.quantity -= item.quantity
+      product.stock -= item.quantity
 
       const orderItem = OrderItem.create({
         orderId: order.id,

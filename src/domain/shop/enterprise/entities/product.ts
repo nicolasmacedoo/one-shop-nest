@@ -5,10 +5,10 @@ import { Optional } from '@/core/types/optional'
 export interface ProductProps {
   userId: UniqueEntityID
   name: string
-  quantity: number
+  stock: number
   price: number
   createdAt: Date
-  updatedAt?: Date
+  updatedAt?: Date | null
 }
 export class Product extends Entity<ProductProps> {
   get userId(): UniqueEntityID {
@@ -24,12 +24,12 @@ export class Product extends Entity<ProductProps> {
     this.touch()
   }
 
-  get quantity(): number {
-    return this.props.quantity
+  get stock(): number {
+    return this.props.stock
   }
 
-  set quantity(quantity: number) {
-    this.props.quantity = quantity
+  set stock(value: number) {
+    this.props.stock = value
     this.touch()
   }
 
@@ -46,7 +46,7 @@ export class Product extends Entity<ProductProps> {
     return this.props.createdAt
   }
 
-  get updatedAt(): Date | undefined {
+  get updatedAt(): Date | undefined | null {
     return this.props.updatedAt
   }
 

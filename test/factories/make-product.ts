@@ -13,7 +13,7 @@ export function makeProduct(
     {
       userId: new UniqueEntityID(),
       name: faker.commerce.productName(),
-      quantity: faker.number.int({ min: 1, max: 100 }),
+      stock: faker.number.int({ min: 1, max: 100 }),
       price: parseFloat(
         faker.commerce.price({
           min: 1,

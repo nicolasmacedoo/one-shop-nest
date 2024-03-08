@@ -6,7 +6,7 @@ import { Either, right } from '@/core/either'
 interface CreateProductUseCaseRequest {
   userId: string
   name: string
-  quantity: number
+  stock: number
   price: number
 }
 
@@ -22,14 +22,14 @@ export class CreateProductUseCase {
 
   async execute({
     name,
-    quantity,
+    stock,
     price,
     userId,
   }: CreateProductUseCaseRequest): Promise<CreateProductUseCaseResponse> {
     const product = Product.create({
       userId: new UniqueEntityID(userId),
       name,
-      quantity,
+      stock,
       price,
     })
 

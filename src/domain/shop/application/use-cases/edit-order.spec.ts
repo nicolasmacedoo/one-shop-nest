@@ -53,6 +53,7 @@ describe('Edit Order', () => {
     const result = await sut.execute({
       userId: '1',
       orderId: '1',
+      clientId: '1',
       items: [
         {
           id: product3.id.toString(),
@@ -98,6 +99,7 @@ describe('Edit Order', () => {
     const result = await sut.execute({
       userId: '2',
       orderId: '1',
+      clientId: '1',
       items: [],
     })
 
