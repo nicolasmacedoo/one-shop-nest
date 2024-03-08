@@ -12,11 +12,11 @@ export const createProductBodySchema = z.object({
   stock: z.number(),
 })
 
-type CreateProductBodySchema = z.infer<typeof createProductBodySchema>
-
 const bodyValidationPipe = new ZodValidationPipe(createProductBodySchema)
 
-@Controller('/products')
+type CreateProductBodySchema = z.infer<typeof createProductBodySchema>
+
+@Controller()
 @UseGuards(JwtAuthGuard)
 export class CreateProductController {
   constructor(private readonly prisma: PrismaService) {}
