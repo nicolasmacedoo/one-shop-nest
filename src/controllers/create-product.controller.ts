@@ -16,12 +16,12 @@ const bodyValidationPipe = new ZodValidationPipe(createProductBodySchema)
 
 type CreateProductBodySchema = z.infer<typeof createProductBodySchema>
 
-@Controller()
+@Controller('/products')
 @UseGuards(JwtAuthGuard)
 export class CreateProductController {
   constructor(private readonly prisma: PrismaService) {}
 
-  @Post('/create')
+  @Post()
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(bodyValidationPipe)

@@ -27,7 +27,7 @@ export class FetchProductsController {
     @CurrentUser() user: UserPayload,
     @Query('page', queryValidationPipe) page: PageQueryParamSchema,
   ) {
-    const perPage = 1
+    const perPage = 20
 
     const products = await this.prisma.product.findMany({
       take: perPage,
