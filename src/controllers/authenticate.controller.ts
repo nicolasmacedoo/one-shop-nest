@@ -49,7 +49,7 @@ export class AuthenticateController {
     const accesToken = this.jwt.sign({ sub: user.id })
 
     return {
-      acces_token: accesToken,
+      access_token: accesToken,
     }
   }
 }
