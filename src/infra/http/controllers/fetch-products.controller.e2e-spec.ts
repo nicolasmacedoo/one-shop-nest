@@ -1,61 +1,49 @@
 import { AppModule } from '@/infra/app.module'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { DatabaseModule } from '@/infra/database/database.module'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
+import { ProductFactory } from 'test/factories/make-product'
+import { UserFactory } from 'test/factories/make-user'
 
 describe('Fetch Products (E2E)', () => {
   let app: INestApplication
-  let prisma: PrismaService
+  let userFactory: UserFactory
+  let productFactory: ProductFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [UserFactory, ProductFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
-    prisma = moduleRef.get(PrismaService)
-
+    userFactory = moduleRef.get(UserFactory)
+    productFactory = moduleRef.get(ProductFactory)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
 
   test('[GET] /products', async () => {
-    const user = await prisma.user.create({
-      data: {
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        password: 'password',
-      },
+    const user = await userFactory.makePrismaUser()
+
+    const accessToken = jwt.sign({ sub: user.id.toString() })
+
+    await productFactory.makePrismaProduct({
+      name: 'Product 1',
+      userId: user.id,
     })
-
-    const accessToken = jwt.sign({ sub: user.id })
-
-    await prisma.product.createMany({
-      data: [
-        {
-          name: 'Product 1',
-          price: 100,
-          stock: 10,
-          userId: user.id,
-        },
-        {
-          name: 'Product 2',
-          price: 200,
-          stock: 20,
-          userId: user.id,
-        },
-        {
-          name: 'Product 3',
-          price: 300,
-          stock: 30,
-          userId: user.id,
-        },
-      ],
+    await productFactory.makePrismaProduct({
+      name: 'Product 2',
+      userId: user.id,
+    })
+    await productFactory.makePrismaProduct({
+      name: 'Product 3',
+      userId: user.id,
     })
 
     const response = await request(app.getHttpServer())
