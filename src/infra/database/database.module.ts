@@ -5,6 +5,8 @@ import { PrismaOrderItemsRepository } from './prisma/repositories/prisma-order-i
 import { PrismaOrdersRepository } from './prisma/repositories/prisma-orders-repository'
 import { PrismaProductsRepository } from './prisma/repositories/prisma-products-repository'
 import { ProductsRepository } from '@/domain/shop/application/repositories/products-repository'
+import { UsersRepository } from '@/domain/shop/application/repositories/users-repository'
+import { PrismaUsersRepository } from './prisma/repositories/prisma-users-repository'
 
 @Module({
   providers: [
@@ -16,6 +18,10 @@ import { ProductsRepository } from '@/domain/shop/application/repositories/produ
       provide: ProductsRepository,
       useClass: PrismaProductsRepository,
     },
+    {
+      provide: UsersRepository,
+      useClass: PrismaUsersRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -23,6 +29,7 @@ import { ProductsRepository } from '@/domain/shop/application/repositories/produ
     PrismaOrderItemsRepository,
     PrismaOrdersRepository,
     ProductsRepository,
+    UsersRepository,
   ],
 })
 export class DatabaseModule {}

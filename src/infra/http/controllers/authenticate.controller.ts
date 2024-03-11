@@ -10,6 +10,7 @@ import { compare } from 'bcryptjs'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { z } from 'zod'
+import { AuthenticateUserUseCase } from '@/domain/shop/application/use-cases/authenticate-user'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -20,36 +21,26 @@ type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>
 
 @Controller('/sessions')
 export class AuthenticateController {
-  constructor(
-    private readonly jwt: JwtService,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly authenticateUser: AuthenticateUserUseCase) {}
 
   @Post()
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
   async handle(@Body() body: AuthenticateBodySchema) {
     const { email, password } = body
 
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
+    const result = await this.authenticateUser.execute({
+      email,
+      password,
     })
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials')
+    if (result.isLeft()) {
+      throw new UnauthorizedException(result.value)
     }
 
-    const isPasswordValid = await compare(password, user.password)
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials')
-    }
-
-    const accesToken = this.jwt.sign({ sub: user.id })
+    const { accessToken } = result.value
 
     return {
-      access_token: accesToken,
+      access_token: accessToken,
     }
   }
 }
