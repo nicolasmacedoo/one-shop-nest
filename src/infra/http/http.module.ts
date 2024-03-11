@@ -5,6 +5,7 @@ import { CreateProductController } from './controllers/create-product.controller
 import { FetchProductsController } from './controllers/fetch-products.controller'
 import { DatabaseModule } from '../database/database.module'
 import { CreateProductUseCase } from '@/domain/shop/application/use-cases/create-product'
+import { FetchProductsUseCase } from '@/domain/shop/application/use-cases/fetch-products'
 
 @Module({
   imports: [DatabaseModule],
@@ -14,6 +15,6 @@ import { CreateProductUseCase } from '@/domain/shop/application/use-cases/create
     CreateProductController,
     FetchProductsController,
   ],
-  providers: [CreateProductUseCase],
+  providers: [CreateProductUseCase, FetchProductsUseCase],
 })
 export class HttpModule {}

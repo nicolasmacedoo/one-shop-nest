@@ -3,8 +3,8 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { z } from 'zod'
+import { FetchProductsUseCase } from '@/domain/shop/application/use-cases/fetch-products'
 
 const pageQueryParamSchema = z
   .string()
@@ -20,24 +20,16 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 @Controller('/products')
 @UseGuards(JwtAuthGuard)
 export class FetchProductsController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly fetchProducts: FetchProductsUseCase) {}
 
   @Get()
   async handle(
     @CurrentUser() user: UserPayload,
     @Query('page', queryValidationPipe) page: PageQueryParamSchema,
   ) {
-    const perPage = 20
-
-    const products = await this.prisma.product.findMany({
-      take: perPage,
-      skip: (page - 1) * perPage,
-      where: {
-        userId: user.sub,
-      },
-      orderBy: {
-        name: 'asc',
-      },
+    const products = await this.fetchProducts.execute({
+      page,
+      userId: user.sub,
     })
 
     return {
