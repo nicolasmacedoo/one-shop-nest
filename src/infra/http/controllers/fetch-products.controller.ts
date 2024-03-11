@@ -5,6 +5,7 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { FetchProductsUseCase } from '@/domain/shop/application/use-cases/fetch-products'
+import { ProductPresenter } from '../presenters/product-presenter'
 
 const pageQueryParamSchema = z
   .string()
@@ -27,13 +28,19 @@ export class FetchProductsController {
     @CurrentUser() user: UserPayload,
     @Query('page', queryValidationPipe) page: PageQueryParamSchema,
   ) {
-    const products = await this.fetchProducts.execute({
+    const result = await this.fetchProducts.execute({
       page,
       userId: user.sub,
     })
 
+    if (result.isLeft()) {
+      throw new Error('Unexpected error')
+    }
+
+    const { products } = result.value
+
     return {
-      products,
+      products: products.map(ProductPresenter.toHTTP),
     }
   }
 }
