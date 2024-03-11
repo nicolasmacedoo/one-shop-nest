@@ -6,6 +6,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 interface UserProps {
   name: string
   email: Email
+  password: string
   createdAt: Date
   updatedAt?: Date
 }
@@ -26,6 +27,10 @@ export class User extends Entity<UserProps> {
   set email(email: Email) {
     this.props.email = email
     this.touch()
+  }
+
+  get password(): string {
+    return this.props.password
   }
 
   get createdAt(): Date {
