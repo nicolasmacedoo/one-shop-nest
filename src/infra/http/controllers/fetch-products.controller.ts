@@ -1,4 +1,10 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common'
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
@@ -34,7 +40,7 @@ export class FetchProductsController {
     })
 
     if (result.isLeft()) {
-      throw new Error('Unexpected error')
+      throw new BadRequestException()
     }
 
     const { products } = result.value

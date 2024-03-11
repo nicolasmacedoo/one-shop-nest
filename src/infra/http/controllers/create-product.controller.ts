@@ -1,4 +1,10 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
@@ -30,11 +36,15 @@ export class CreateProductController {
     const { name, price, stock } = body
     const { sub: userId } = user
 
-    await this.createProduct.execute({
+    const result = await this.createProduct.execute({
       userId,
       name,
       price,
       stock,
     })
+
+    if (result.isLeft()) {
+      throw new BadRequestException()
+    }
   }
 }
