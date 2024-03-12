@@ -2,30 +2,85 @@ import { PaginationParams } from '@/core/repositories/pagination-params'
 import { ClientsRepository } from '@/domain/shop/application/repositories/clients-repository'
 import { Client } from '@/domain/shop/enterprise/entities/client'
 import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../prisma.service'
+import { PrismaClientMapper } from '../mappers/prisma-client-mapper'
 
 @Injectable()
 export class PrismaClientsRepository implements ClientsRepository {
-  findById(id: string): Promise<Client | null> {
-    throw new Error('Method not implemented.')
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findById(id: string): Promise<Client | null> {
+    const client = await this.prisma.client.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!client) {
+      return null
+    }
+
+    return PrismaClientMapper.toDomain(client)
   }
 
-  findByDocument(document: string): Promise<Client | null> {
-    throw new Error('Method not implemented.')
+  async findByDocument(document: string): Promise<Client | null> {
+    const client = await this.prisma.client.findUnique({
+      where: {
+        document,
+      },
+    })
+
+    if (!client) {
+      return null
+    }
+
+    return PrismaClientMapper.toDomain(client)
   }
 
-  findMany(userId: string, params: PaginationParams): Promise<Client[]> {
-    throw new Error('Method not implemented.')
+  async findMany(
+    userId: string,
+    { page }: PaginationParams,
+  ): Promise<Client[]> {
+    const clients = await this.prisma.client.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+    })
+
+    return clients.map(PrismaClientMapper.toDomain)
   }
 
-  save(client: Client): Promise<void> {
-    throw new Error('Method not implemented.')
+  async save(client: Client): Promise<void> {
+    const data = PrismaClientMapper.toPersistence(client)
+
+    await this.prisma.client.update({
+      where: {
+        id: data.id,
+      },
+      data,
+    })
   }
 
-  create(client: Client): Promise<void> {
-    throw new Error('Method not implemented.')
+  async create(client: Client): Promise<void> {
+    const data = PrismaClientMapper.toPersistence(client)
+
+    await this.prisma.client.create({
+      data,
+    })
   }
 
-  delete(document: string): Promise<void> {
-    throw new Error('Method not implemented.')
+  async delete(client: Client): Promise<void> {
+    const data = PrismaClientMapper.toPersistence(client)
+
+    await this.prisma.client.delete({
+      where: {
+        id: data.id,
+      },
+    })
   }
 }

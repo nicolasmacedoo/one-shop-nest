@@ -22,8 +22,7 @@ export class CreateProductController {
   @Post()
   async handle(
     @CurrentUser() user: UserPayload,
-    @Body(bodyValidationPipe)
-    body: CreateProductBodySchema,
+    @Body(bodyValidationPipe) body: CreateProductBodySchema,
   ) {
     const { name, price, stock } = body
     const { sub: userId } = user

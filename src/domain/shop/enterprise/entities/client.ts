@@ -6,10 +6,10 @@ export interface ClientProps {
   userId: UniqueEntityID
   name: string
   document: string
-  email?: string
-  phone?: string
+  email?: string | null
+  phone?: string | null
   createdAt: Date
-  updatedAt?: Date
+  updatedAt?: Date | null
 }
 
 export class Client extends Entity<ClientProps> {
@@ -35,7 +35,7 @@ export class Client extends Entity<ClientProps> {
     this.touch()
   }
 
-  get email(): string | undefined {
+  get email(): string | undefined | null {
     return this.props.email
   }
 
@@ -44,7 +44,7 @@ export class Client extends Entity<ClientProps> {
     this.touch()
   }
 
-  get phone(): string | undefined {
+  get phone(): string | undefined | null {
     return this.props.phone
   }
 
@@ -57,7 +57,7 @@ export class Client extends Entity<ClientProps> {
     return this.props.createdAt
   }
 
-  get updatedAt(): Date | undefined {
+  get updatedAt(): Date | undefined | null {
     return this.props.updatedAt
   }
 

@@ -7,13 +7,17 @@ import { PrismaProductsRepository } from './prisma/repositories/prisma-products-
 import { ProductsRepository } from '@/domain/shop/application/repositories/products-repository'
 import { UsersRepository } from '@/domain/shop/application/repositories/users-repository'
 import { PrismaUsersRepository } from './prisma/repositories/prisma-users-repository'
+import { ClientsRepository } from '@/domain/shop/application/repositories/clients-repository'
 
 @Module({
   providers: [
     PrismaService,
-    PrismaClientsRepository,
     PrismaOrderItemsRepository,
     PrismaOrdersRepository,
+    {
+      provide: ClientsRepository,
+      useClass: PrismaClientsRepository,
+    },
     {
       provide: ProductsRepository,
       useClass: PrismaProductsRepository,
@@ -25,9 +29,9 @@ import { PrismaUsersRepository } from './prisma/repositories/prisma-users-reposi
   ],
   exports: [
     PrismaService,
-    PrismaClientsRepository,
     PrismaOrderItemsRepository,
     PrismaOrdersRepository,
+    ClientsRepository,
     ProductsRepository,
     UsersRepository,
   ],

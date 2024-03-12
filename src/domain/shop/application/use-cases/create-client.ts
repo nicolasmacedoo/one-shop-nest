@@ -3,6 +3,7 @@ import { ClientsRepository } from '../repositories/clients-repository'
 import { ResourceAlreadyExistsError } from './errors/resource-already-exists-error'
 import { Client } from '../../enterprise/entities/client'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Injectable } from '@nestjs/common'
 
 interface CreateClientUseCaseRequest {
   userId: string
@@ -17,6 +18,7 @@ type CreateClientUseCaseResponse = Either<
   { client: Client }
 >
 
+@Injectable()
 export class CreateClientUseCase {
   constructor(private clientsRepository: ClientsRepository) {}
 
