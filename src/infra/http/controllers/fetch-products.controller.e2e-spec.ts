@@ -33,18 +33,20 @@ describe('Fetch Products (E2E)', () => {
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
-    await productFactory.makePrismaProduct({
-      name: 'Product 1',
-      userId: user.id,
-    })
-    await productFactory.makePrismaProduct({
-      name: 'Product 2',
-      userId: user.id,
-    })
-    await productFactory.makePrismaProduct({
-      name: 'Product 3',
-      userId: user.id,
-    })
+    await Promise.all([
+      productFactory.makePrismaProduct({
+        name: 'Product 1',
+        userId: user.id,
+      }),
+      productFactory.makePrismaProduct({
+        name: 'Product 2',
+        userId: user.id,
+      }),
+      productFactory.makePrismaProduct({
+        name: 'Product 3',
+        userId: user.id,
+      }),
+    ])
 
     const response = await request(app.getHttpServer())
       .get('/products')
@@ -53,11 +55,11 @@ describe('Fetch Products (E2E)', () => {
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      products: [
+      products: expect.arrayContaining([
         expect.objectContaining({ name: 'Product 1' }),
         expect.objectContaining({ name: 'Product 2' }),
         expect.objectContaining({ name: 'Product 3' }),
-      ],
+      ]),
     })
   })
 })
