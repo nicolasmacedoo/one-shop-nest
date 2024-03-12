@@ -2,6 +2,7 @@ import { ProductsRepository } from '@/domain/shop/application/repositories/produ
 import { Product } from '@/domain/shop/enterprise/entities/product'
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/domain/shop/application/use-cases/errors/resource-not-found-error'
+import { Injectable } from '@nestjs/common'
 
 interface GetProductByIdUseCaseRequest {
   id: string
@@ -13,6 +14,8 @@ type GetProductByIdUseCaseResponse = Either<
     product: Product
   }
 >
+
+@Injectable()
 export class GetProductByIdUseCase {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
