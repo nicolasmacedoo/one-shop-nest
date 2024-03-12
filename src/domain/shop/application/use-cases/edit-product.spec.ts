@@ -25,12 +25,14 @@ describe('Edit Product', () => {
       userId: 'user-1',
       name: 'Produto teste',
       stock: 10,
+      price: 11.99,
       productId: newProduct.id.toString(),
     })
 
     expect(inMemoryProductsRepository.items[0]).toMatchObject({
       name: 'Produto teste',
       stock: 10,
+      price: 11.99,
     })
   })
 
@@ -46,6 +48,7 @@ describe('Edit Product', () => {
       userId: 'user-2',
       name: 'Produto teste',
       stock: 10,
+      price: 11.99,
       productId: newProduct.id.toString(),
     })
 
