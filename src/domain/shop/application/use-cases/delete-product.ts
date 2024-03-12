@@ -2,6 +2,7 @@ import { ProductsRepository } from '../repositories/products-repository'
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/domain/shop/application/use-cases/errors/resource-not-found-error'
 import { NotAllowedError } from '@/domain/shop/application/use-cases/errors/not-allowed-error'
+import { Injectable } from '@nestjs/common'
 
 interface DeleteProductUseCaseRequest {
   productId: string
@@ -13,6 +14,7 @@ type DeleteProductUseCaseResponse = Either<
   null
 >
 
+@Injectable()
 export class DeleteProductUseCase {
   constructor(private productsRepository: ProductsRepository) {}
 

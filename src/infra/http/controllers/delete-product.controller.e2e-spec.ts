@@ -8,11 +8,11 @@ import request from 'supertest'
 import { ProductFactory } from 'test/factories/make-product'
 import { UserFactory } from 'test/factories/make-user'
 
-describe('Eedit Product (E2E)', () => {
+describe('Delete Product (E2E)', () => {
   let app: INestApplication
-  let prisma: PrismaService
   let userFactory: UserFactory
   let productFactory: ProductFactory
+  let prisma: PrismaService
   let jwt: JwtService
 
   beforeAll(async () => {
@@ -31,7 +31,7 @@ describe('Eedit Product (E2E)', () => {
     await app.init()
   })
 
-  test('[PUT] /products/:id', async () => {
+  test('[DELETE] /products/:id', async () => {
     const user = await userFactory.makePrismaUser()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
@@ -43,13 +43,9 @@ describe('Eedit Product (E2E)', () => {
     const productId = product.id.toString()
 
     const response = await request(app.getHttpServer())
-      .put(`/products/${productId}`)
+      .delete(`/products/${productId}`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'New Name',
-        price: 100,
-        stock: 10,
-      })
+      .send()
 
     expect(response.statusCode).toBe(204)
 
@@ -59,18 +55,6 @@ describe('Eedit Product (E2E)', () => {
       },
     })
 
-    const editedProduct = {
-      name: productOnDatabase?.name,
-      price: Number(productOnDatabase?.price),
-      stock: productOnDatabase?.stock,
-    }
-
-    expect(editedProduct).toMatchObject(
-      expect.objectContaining({
-        name: 'New Name',
-        price: 100,
-        stock: 10,
-      }),
-    )
+    expect(productOnDatabase).toBeNull()
   })
 })
