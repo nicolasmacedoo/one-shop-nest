@@ -16,9 +16,7 @@ describe('Create Product (E2E)', () => {
     }).compile()
 
     app = moduleRef.createNestApplication()
-
     prisma = moduleRef.get(PrismaService)
-
     jwt = moduleRef.get(JwtService)
 
     await app.init()

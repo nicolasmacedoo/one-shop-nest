@@ -19,6 +19,8 @@ import { DeleteProductController } from './controllers/delete-product.controller
 import { DeleteProductUseCase } from '@/domain/shop/application/use-cases/delete-product'
 import { CreateClientController } from './controllers/create-client.controller'
 import { CreateClientUseCase } from '@/domain/shop/application/use-cases/create-client'
+import { FetchClientsController } from './controllers/fetch-clients.controller'
+import { FetchClientsUseCase } from '@/domain/shop/application/use-cases/fetch-clients'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -31,6 +33,7 @@ import { CreateClientUseCase } from '@/domain/shop/application/use-cases/create-
     EditProductController,
     DeleteProductController,
     CreateClientController,
+    FetchClientsController,
   ],
   providers: [
     CreateProductUseCase,
@@ -41,6 +44,7 @@ import { CreateClientUseCase } from '@/domain/shop/application/use-cases/create-
     EditProductUseCase,
     DeleteProductUseCase,
     CreateClientUseCase,
+    FetchClientsUseCase,
   ],
 })
 export class HttpModule {}

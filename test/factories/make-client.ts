@@ -1,6 +1,9 @@
 import { Client, ClientProps } from '@/domain/shop/enterprise/entities/client'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { faker } from '@faker-js/faker'
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { PrismaClientMapper } from '@/infra/database/prisma/mappers/prisma-client-mapper'
 
 export function makeClient(
   override: Partial<ClientProps> = {},
@@ -18,4 +21,19 @@ export function makeClient(
     },
     id,
   )
+}
+
+@Injectable()
+export class ClientFactory {
+  constructor(private readonly prisa: PrismaService) {}
+
+  async makePrismaClient(data: Partial<ClientProps> = {}): Promise<Client> {
+    const client = makeClient(data)
+
+    await this.prisa.client.create({
+      data: PrismaClientMapper.toPersistence(client),
+    })
+
+    return client
+  }
 }
