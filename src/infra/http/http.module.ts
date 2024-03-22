@@ -23,6 +23,8 @@ import { FetchClientsController } from './controllers/fetch-clients.controller'
 import { FetchClientsUseCase } from '@/domain/shop/application/use-cases/fetch-clients'
 import { EditClientController } from './controllers/edit-client.controller'
 import { EditClientUseCase } from '@/domain/shop/application/use-cases/edit-client'
+import { GetClientByIdController } from './controllers/get-client-by-id.controller'
+import { GetClientByIdUseCase } from '@/domain/shop/application/use-cases/get-client-by-id'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -37,6 +39,7 @@ import { EditClientUseCase } from '@/domain/shop/application/use-cases/edit-clie
     CreateClientController,
     FetchClientsController,
     EditClientController,
+    GetClientByIdController,
   ],
   providers: [
     CreateProductUseCase,
@@ -49,6 +52,7 @@ import { EditClientUseCase } from '@/domain/shop/application/use-cases/edit-clie
     CreateClientUseCase,
     FetchClientsUseCase,
     EditClientUseCase,
+    GetClientByIdUseCase,
   ],
 })
 export class HttpModule {}
