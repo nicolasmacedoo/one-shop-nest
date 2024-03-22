@@ -25,12 +25,12 @@ export function makeClient(
 
 @Injectable()
 export class ClientFactory {
-  constructor(private readonly prisa: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async makePrismaClient(data: Partial<ClientProps> = {}): Promise<Client> {
     const client = makeClient(data)
 
-    await this.prisa.client.create({
+    await this.prisma.client.create({
       data: PrismaClientMapper.toPersistence(client),
     })
 

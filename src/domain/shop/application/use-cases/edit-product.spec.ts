@@ -3,6 +3,7 @@ import { makeProduct } from 'test/factories/make-product'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { EditProductUseCase } from '@/domain/shop/application/use-cases/edit-product'
 import { NotAllowedError } from '@/domain/shop/application/use-cases/errors/not-allowed-error'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 let inMemoryProductsRepository: InMemoryProductsRepository
 let sut: EditProductUseCase
@@ -54,5 +55,18 @@ describe('Edit Product', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(NotAllowedError)
+  })
+
+  it('not should be able to edit a product that does not exist', async () => {
+    const result = await sut.execute({
+      userId: 'user-1',
+      name: 'Produto teste',
+      stock: 10,
+      price: 11.99,
+      productId: 'product-1',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 })

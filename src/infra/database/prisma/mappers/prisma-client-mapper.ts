@@ -4,15 +4,18 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 export class PrismaClientMapper {
   public static toDomain(raw: PrismaClient): Client {
-    return Client.create({
-      userId: new UniqueEntityID(raw.userId),
-      name: raw.name,
-      document: raw.document,
-      email: raw.email,
-      phone: raw.phone,
-      createdAt: raw.createdAt,
-      updatedAt: raw.updatedAt,
-    })
+    return Client.create(
+      {
+        userId: new UniqueEntityID(raw.userId),
+        name: raw.name,
+        document: raw.document,
+        email: raw.email,
+        phone: raw.phone,
+        createdAt: raw.createdAt,
+        updatedAt: raw.updatedAt,
+      },
+      new UniqueEntityID(raw.id),
+    )
   }
 
   public static toPersistence(

@@ -1,5 +1,12 @@
 import { EditProductUseCase } from '@/domain/shop/application/use-cases/edit-product'
-import { Body, Controller, HttpCode, Param, Put } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  Param,
+  Put,
+} from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
@@ -15,7 +22,7 @@ const bodyValidationPipe = new ZodValidationPipe(editProductBodySchema)
 
 type EditProductBodySchema = z.infer<typeof editProductBodySchema>
 
-@Controller('products/:id')
+@Controller('/products/:id')
 export class EditProductController {
   constructor(private readonly editProductUseCase: EditProductUseCase) {}
 
@@ -37,7 +44,7 @@ export class EditProductController {
     })
 
     if (result.isLeft()) {
-      return result.value
+      throw new BadRequestException()
     }
   }
 }

@@ -5,71 +5,74 @@ import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
-import { ProductFactory } from 'test/factories/make-product'
+import { ClientFactory } from 'test/factories/make-client'
 import { UserFactory } from 'test/factories/make-user'
 
 describe('Edit Product (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let userFactory: UserFactory
-  let productFactory: ProductFactory
+  let clientFactory: ClientFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, ProductFactory],
+      providers: [UserFactory, ClientFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
     userFactory = moduleRef.get(UserFactory)
-    productFactory = moduleRef.get(ProductFactory)
+    clientFactory = moduleRef.get(ClientFactory)
     prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
 
-  test('[PUT] /products/:id', async () => {
+  test('[PUT] /clients/:id', async () => {
     const user = await userFactory.makePrismaUser()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
-    const product = await productFactory.makePrismaProduct({
+    const client = await clientFactory.makePrismaClient({
       userId: user.id,
     })
 
-    const productId = product.id.toString()
+    const clientId = client.id.toString()
 
     const response = await request(app.getHttpServer())
-      .put(`/products/${productId}`)
+      .put(`/clients/${clientId}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'New Name',
-        price: 100,
-        stock: 10,
+        document: '12345678901',
+        email: 'new-email@email.com',
+        phone: '12345678901',
       })
 
     expect(response.statusCode).toBe(204)
 
-    const productOnDatabase = await prisma.product.findUnique({
+    const productOnDatabase = await prisma.client.findUnique({
       where: {
-        id: productId,
+        id: clientId,
       },
     })
 
-    const editedProduct = {
+    const editedClient = {
       name: productOnDatabase?.name,
-      price: Number(productOnDatabase?.price),
-      stock: productOnDatabase?.stock,
+      document: productOnDatabase?.document,
+      email: productOnDatabase?.email,
+      phone: productOnDatabase?.phone,
     }
 
-    expect(editedProduct).toMatchObject(
+    expect(editedClient).toMatchObject(
       expect.objectContaining({
         name: 'New Name',
-        price: 100,
-        stock: 10,
+        document: '12345678901',
+        email: 'new-email@email.com',
+        phone: '12345678901',
       }),
     )
   })
