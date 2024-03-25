@@ -1,6 +1,8 @@
 import { OrderItem } from '../../enterprise/entities/order-item'
 
-export interface OrderItemsRepository {
-  findManyByOrderId(orderId: string): Promise<OrderItem[]>
-  deleteManyByOrderId(orderId: string): Promise<void>
+export abstract class OrderItemsRepository {
+  abstract createMany(orderItems: OrderItem[]): Promise<void>
+  abstract deleteMany(orderItems: OrderItem[]): Promise<void>
+  abstract findManyByOrderId(orderId: string): Promise<OrderItem[]>
+  abstract deleteManyByOrderId(orderId: string): Promise<void>
 }

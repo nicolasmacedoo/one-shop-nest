@@ -36,11 +36,17 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     this.items[itemIndex] = order
 
+    await this.orderItemsRepository.createMany(order.items.getNewItems())
+
+    await this.orderItemsRepository.deleteMany(order.items.getRemovedItems())
+
     DomainEvents.dispatchEventsForAggregate(order.id)
   }
 
   async create(order: Order): Promise<void> {
     this.items.push(order)
+
+    await this.orderItemsRepository.createMany(order.items.getItems())
 
     DomainEvents.dispatchEventsForAggregate(order.id)
   }

@@ -108,4 +108,37 @@ describe('Create Order', () => {
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(InsuficientItemQuantityError)
   })
+
+  it('should persist the order-item when creating a new question', async () => {
+    const product1 = makeProduct()
+    const product2 = makeProduct()
+
+    await inMemoryProductsRepository.create(product1)
+    await inMemoryProductsRepository.create(product2)
+
+    const result = await sut.execute({
+      userId: '1',
+      clientId: '1',
+      items: [
+        {
+          id: product1.id.toString(),
+          quantity: 1,
+        },
+        {
+          id: product2.id.toString(),
+          quantity: 2,
+        },
+      ],
+    })
+    console.log(result)
+
+    expect(result.isRight()).toBe(true)
+    expect(inMemoryOrderItemsRepository.items).toHaveLength(2)
+    expect(inMemoryOrderItemsRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ productId: product1.id }),
+        expect.objectContaining({ productId: product2.id }),
+      ]),
+    )
+  })
 })

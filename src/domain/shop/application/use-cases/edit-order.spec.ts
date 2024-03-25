@@ -106,4 +106,52 @@ describe('Edit Order', () => {
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(NotAllowedError)
   })
+
+  it('should sync new and removed order items when editing a question', async () => {
+    const order = Order.create({
+      userId: new UniqueEntityID('1'),
+      clientId: new UniqueEntityID('1'),
+      items: new OrderItemsList([]),
+    })
+
+    await inMemoryOrdersRepository.create(order)
+
+    const product1 = makeProduct()
+    const product2 = makeProduct()
+    const product3 = makeProduct()
+
+    await inMemoryProductsRepository.create(product1)
+    await inMemoryProductsRepository.create(product2)
+    await inMemoryProductsRepository.create(product3)
+
+    inMemoryOrderItemsRepository.items.push(
+      makeOrderItem({ orderId: order.id, productId: product1.id }),
+      makeOrderItem({ orderId: order.id, productId: product2.id }),
+    )
+
+    const result = await sut.execute({
+      userId: '1',
+      orderId: order.id.toString(),
+      clientId: '1',
+      items: [
+        {
+          id: product3.id.toString(),
+          quantity: 55,
+        },
+        {
+          id: product1.id.toString(),
+          quantity: 21,
+        },
+      ],
+    })
+
+    expect(result.isRight()).toBe(true)
+    expect(inMemoryOrderItemsRepository.items).toHaveLength(2)
+    expect(inMemoryOrderItemsRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ productId: product3.id }),
+        expect.objectContaining({ productId: product1.id }),
+      ]),
+    )
+  })
 })
