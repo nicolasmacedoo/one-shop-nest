@@ -21,6 +21,7 @@ model User {
 
   products Product[]
   clients  Client[]
+  Order    Order[]
 
   @@map("users")
 }
@@ -34,7 +35,8 @@ model Product {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
+  OrderItem OrderItem[]
 
   @@map("products")
 }
@@ -49,7 +51,37 @@ model Client {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id])
+  user  User    @relation(fields: [userId], references: [id])
+  Order Order[]
 
   @@map("clients")
+}
+
+model Order {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  clientId  String    @map("client_id")
+  total     Decimal   @db.Money
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  user      User        @relation(fields: [userId], references: [id])
+  client    Client      @relation(fields: [clientId], references: [id])
+  orderItem OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String    @id @default(uuid())
+  orderId   String    @map("order_id")
+  productId String    @map("product_id")
+  quantity  Int
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
 }

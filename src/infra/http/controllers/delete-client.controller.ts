@@ -33,10 +33,10 @@ export class DeleteClientController {
     if (result.isLeft()) {
       const err = result.value
 
-      switch (true) {
-        case err instanceof NotAllowedError:
+      switch (err.constructor) {
+        case NotAllowedError:
           throw new ForbiddenException(err.message)
-        case err instanceof ResourceNotFoundError:
+        case ResourceNotFoundError:
           throw new NotFoundException(err.message)
         default:
           throw new BadRequestException(err)

@@ -10,7 +10,7 @@ export interface OrderProps {
   items: OrderItemsList
   total: number
   createdAt: Date
-  updatedAt?: Date
+  updatedAt?: Date | null
 }
 
 export class Order extends AggregateRoot<OrderProps> {
@@ -40,11 +40,16 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.total
   }
 
+  set total(total: number) {
+    this.props.total = total
+    this.touch()
+  }
+
   get createdAt(): Date {
     return this.props.createdAt
   }
 
-  get updatedAt(): Date | undefined {
+  get updatedAt(): Date | undefined | null {
     return this.props.updatedAt
   }
 

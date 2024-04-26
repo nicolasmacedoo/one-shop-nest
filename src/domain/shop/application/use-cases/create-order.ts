@@ -7,6 +7,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
 import { OrderItemsList } from '../../enterprise/entities/order-items-list'
 import { InsuficientItemQuantityError } from './errors/insuficient-item-quantity-error'
+import { Injectable } from '@nestjs/common'
 
 interface CreateOrderUseCaseRequest {
   userId: string
@@ -24,6 +25,7 @@ type CreateOrderUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateOrderUseCase {
   constructor(
     private orderRepository: OrdersRepository,
@@ -62,6 +64,8 @@ export class CreateOrderUseCase {
 
       product.stock -= item.quantity
 
+      await this.productsRepository.save(product)
+
       const orderItem = OrderItem.create({
         orderId: order.id,
         productId: product.id,
@@ -73,6 +77,9 @@ export class CreateOrderUseCase {
     }
 
     order.items = new OrderItemsList(orderItems)
+    order.total = orderItems.reduce((acc, item) => {
+      return acc + item.quantity * item.price
+    }, 0)
 
     this.orderRepository.create(order)
 

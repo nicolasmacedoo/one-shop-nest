@@ -27,6 +27,10 @@ import { GetClientByIdController } from './controllers/get-client-by-id.controll
 import { GetClientByIdUseCase } from '@/domain/shop/application/use-cases/get-client-by-id'
 import { DeleteClientController } from './controllers/delete-client.controller'
 import { DeleteClientUseCase } from '@/domain/shop/application/use-cases/delete-client'
+import { CreateOrderController } from './controllers/create-order.controller'
+import { CreateOrderUseCase } from '@/domain/shop/application/use-cases/create-order'
+import { GetUserProfileController } from './controllers/get-user-profile'
+import { GetUserProfileUseCase } from '@/domain/shop/application/use-cases/get-user-profile'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -43,6 +47,8 @@ import { DeleteClientUseCase } from '@/domain/shop/application/use-cases/delete-
     EditClientController,
     GetClientByIdController,
     DeleteClientController,
+    CreateOrderController,
+    GetUserProfileController,
   ],
   providers: [
     CreateProductUseCase,
@@ -57,6 +63,8 @@ import { DeleteClientUseCase } from '@/domain/shop/application/use-cases/delete-
     EditClientUseCase,
     GetClientByIdUseCase,
     DeleteClientUseCase,
+    CreateOrderUseCase,
+    GetUserProfileUseCase,
   ],
 })
 export class HttpModule {}
