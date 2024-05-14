@@ -40,7 +40,7 @@ export class PrismaClientsRepository implements ClientsRepository {
   async findMany(
     userId: string,
     { page, query }: PaginationParams,
-  ): Promise<Client[]> {
+  ): Promise<{ clients: Client[]; totalCount: number }> {
     const clients = await this.prisma.client.findMany({
       where: {
         userId,
@@ -58,7 +58,22 @@ export class PrismaClientsRepository implements ClientsRepository {
       skip: (page - 1) * 10,
     })
 
-    return clients.map(PrismaClientMapper.toDomain)
+    const totalCount = await this.prisma.client.count({
+      where: {
+        userId,
+        AND: {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
+      },
+    })
+
+    return {
+      clients: clients.map(PrismaClientMapper.toDomain),
+      totalCount,
+    }
   }
 
   async save(client: Client): Promise<void> {

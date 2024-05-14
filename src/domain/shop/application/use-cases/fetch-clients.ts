@@ -13,6 +13,7 @@ type FetchClientsUseCaseResponse = Either<
   null,
   {
     clients: Client[]
+    totalCount: number
   }
 >
 
@@ -25,13 +26,17 @@ export class FetchClientsUseCase {
     page,
     query,
   }: FetchClientsUseCaseRequest): Promise<FetchClientsUseCaseResponse> {
-    const clients = await this.clientRepository.findMany(userId, {
-      page,
-      query,
-    })
+    const { clients, totalCount } = await this.clientRepository.findMany(
+      userId,
+      {
+        page,
+        query,
+      },
+    )
 
     return right({
       clients,
+      totalCount,
     })
   }
 }

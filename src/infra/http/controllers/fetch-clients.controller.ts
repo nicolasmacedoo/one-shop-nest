@@ -43,10 +43,11 @@ export class FetchClientsController {
       throw new BadRequestException()
     }
 
-    const { clients } = result.value
+    const { clients, totalCount } = result.value
 
     return {
       clients: clients.map(ClientPresenter.toHTTP),
+      totalCount,
     }
   }
 }

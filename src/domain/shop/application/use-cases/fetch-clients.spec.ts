@@ -38,6 +38,7 @@ describe('Fetch Clients', () => {
       expect.objectContaining({ name: 'Jane Doe' }),
       expect.objectContaining({ name: 'John Doe' }),
     ])
+    expect(result.value?.totalCount).toBe(4)
   })
 
   it('should be able to fetch paginated products', async () => {
@@ -111,6 +112,7 @@ describe('Fetch Clients', () => {
     })
 
     expect(result.isRight()).toBeTruthy()
+    expect(result.value?.totalCount).toBe(2)
     expect(result.value?.clients).toEqual([
       expect.objectContaining({ name: 'Bar Foo' }),
       expect.objectContaining({ name: 'Foo Bar' }),

@@ -53,6 +53,8 @@ describe('Fetch Clients (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
+    console.log(response.body)
+
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       clients: expect.arrayContaining([
@@ -60,6 +62,7 @@ describe('Fetch Clients (E2E)', () => {
         expect.objectContaining({ name: 'Astolfo' }),
         expect.objectContaining({ name: 'Geraldo' }),
       ]),
+      totalCount: 3,
     })
   })
 })
