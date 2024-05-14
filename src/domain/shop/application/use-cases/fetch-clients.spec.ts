@@ -41,7 +41,7 @@ describe('Fetch Clients', () => {
   })
 
   it('should be able to fetch paginated products', async () => {
-    for (let i = 0; i < 22; i++) {
+    for (let i = 0; i < 12; i++) {
       await inMemoryClientsRepository.create(
         makeClient({
           name: `Client ${i}`,
@@ -87,6 +87,33 @@ describe('Fetch Clients', () => {
     expect(result.value?.clients).toEqual([
       expect.objectContaining({ name: 'Jane Doe' }),
       expect.objectContaining({ name: 'John Doe' }),
+    ])
+  })
+
+  it('should be able to fetch clients by query', async () => {
+    await inMemoryClientsRepository.create(
+      makeClient({ name: 'John Doe', userId: new UniqueEntityID('user-id') }),
+    )
+    await inMemoryClientsRepository.create(
+      makeClient({ name: 'Jane Doe', userId: new UniqueEntityID('user-id') }),
+    )
+    await inMemoryClientsRepository.create(
+      makeClient({ name: 'Foo Bar', userId: new UniqueEntityID('user-id') }),
+    )
+    await inMemoryClientsRepository.create(
+      makeClient({ name: 'Bar Foo', userId: new UniqueEntityID('user-id') }),
+    )
+
+    const result = await sut.execute({
+      userId: 'user-id',
+      page: 1,
+      query: 'Foo',
+    })
+
+    expect(result.isRight()).toBeTruthy()
+    expect(result.value?.clients).toEqual([
+      expect.objectContaining({ name: 'Bar Foo' }),
+      expect.objectContaining({ name: 'Foo Bar' }),
     ])
   })
 })

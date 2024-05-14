@@ -25,17 +25,18 @@ export class PrismaProductsRepository implements ProductsRepository {
 
   async findMany(
     userId: string,
-    { page }: PaginationParams,
+    { page, query }: PaginationParams,
   ): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
       where: {
         userId,
+        name: {
+          contains: query,
+          mode: 'insensitive',
+        },
       },
-      orderBy: {
-        name: 'asc',
-      },
-      take: 20,
-      skip: (page - 1) * 20,
+      skip: (page - 1) * 10,
+      take: 10,
     })
 
     return products.map(PrismaProductMapper.toDomain)

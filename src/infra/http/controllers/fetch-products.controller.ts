@@ -6,6 +6,12 @@ import { z } from 'zod'
 import { FetchProductsUseCase } from '@/domain/shop/application/use-cases/fetch-products'
 import { ProductPresenter } from '../presenters/product-presenter'
 
+const queryParamSchema = z.string().optional()
+
+const queryValidationPipe = new ZodValidationPipe(queryParamSchema)
+
+type QueryParamSchema = z.infer<typeof queryParamSchema>
+
 const pageQueryParamSchema = z
   .string()
   .optional()
@@ -13,7 +19,7 @@ const pageQueryParamSchema = z
   .transform(Number)
   .pipe(z.number().min(1))
 
-const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
+const pageValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
@@ -24,9 +30,11 @@ export class FetchProductsController {
   @Get()
   async handle(
     @CurrentUser() user: UserPayload,
-    @Query('page', queryValidationPipe) page: PageQueryParamSchema,
+    @Query('page', pageValidationPipe) page: PageQueryParamSchema,
+    @Query('query', queryValidationPipe) query: QueryParamSchema,
   ) {
     const result = await this.fetchProducts.execute({
+      query,
       page,
       userId: user.sub,
     })

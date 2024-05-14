@@ -41,7 +41,7 @@ describe('Fetch Products', () => {
   })
 
   it('should be able to fetch paginated products', async () => {
-    for (let i = 0; i < 22; i++) {
+    for (let i = 0; i < 12; i++) {
       await inMemoryProductsRepository.create(
         makeProduct({
           name: `Product ${i}`,

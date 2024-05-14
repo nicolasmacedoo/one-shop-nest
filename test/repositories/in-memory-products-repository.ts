@@ -22,7 +22,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
     const products = this.items
       .filter((item) => item.userId.toString() === userId)
       .sort((a, b) => a.name.localeCompare(b.name))
-      .slice((page - 1) * 20, page * 20)
+      .slice((page - 1) * 10, page * 10)
 
     return products
   }

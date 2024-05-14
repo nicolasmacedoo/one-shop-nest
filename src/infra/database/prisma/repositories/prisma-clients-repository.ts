@@ -39,17 +39,23 @@ export class PrismaClientsRepository implements ClientsRepository {
 
   async findMany(
     userId: string,
-    { page }: PaginationParams,
+    { page, query }: PaginationParams,
   ): Promise<Client[]> {
     const clients = await this.prisma.client.findMany({
       where: {
         userId,
+        AND: {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
       },
       orderBy: {
         name: 'asc',
       },
-      take: 20,
-      skip: (page - 1) * 20,
+      take: 10,
+      skip: (page - 1) * 10,
     })
 
     return clients.map(PrismaClientMapper.toDomain)

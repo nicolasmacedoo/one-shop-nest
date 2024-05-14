@@ -27,13 +27,14 @@ export class InMemoryClientsRepository implements ClientsRepository {
 
   async findMany(
     userId: string,
-    { page }: PaginationParams,
+    { page, query }: PaginationParams,
   ): Promise<Client[]> {
     const clients = this.items
       .filter((item) => item.userId.toString() === userId)
       .sort((a, b) => a.name.localeCompare(b.name))
-      .slice((page - 1) * 20, page * 20)
+      .slice((page - 1) * 10, page * 10)
 
+    if (query) return clients.filter((item) => item.name.includes(query))
     return clients
   }
 

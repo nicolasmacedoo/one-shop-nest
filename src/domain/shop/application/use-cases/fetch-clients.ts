@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common'
 interface FetchClientsUseCaseRequest {
   userId: string
   page: number
+  query?: string
 }
 
 type FetchClientsUseCaseResponse = Either<
@@ -22,8 +23,12 @@ export class FetchClientsUseCase {
   async execute({
     userId,
     page,
+    query,
   }: FetchClientsUseCaseRequest): Promise<FetchClientsUseCaseResponse> {
-    const clients = await this.clientRepository.findMany(userId, { page })
+    const clients = await this.clientRepository.findMany(userId, {
+      page,
+      query,
+    })
 
     return right({
       clients,
