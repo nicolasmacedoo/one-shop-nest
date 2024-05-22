@@ -31,7 +31,7 @@ describe('GetUserProfile (E2E)', () => {
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
     const response = await request(app.getHttpServer())
-      .get(`/users/${user.id}/profile`)
+      .get('/users/profile')
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
