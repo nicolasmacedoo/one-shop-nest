@@ -38,6 +38,7 @@ describe('Fetch Products', () => {
       expect.objectContaining({ name: 'Caneta' }),
       expect.objectContaining({ name: 'Lapis' }),
     ])
+    expect(result.value?.totalCount).toBe(4)
   })
 
   it('should be able to fetch paginated products', async () => {
@@ -56,6 +57,7 @@ describe('Fetch Products', () => {
     })
 
     expect(result.value?.products).toHaveLength(2)
+    expect(result.value?.totalCount).toBe(12)
   })
 
   it('should not be able to fetch products from another user', async () => {
@@ -87,5 +89,31 @@ describe('Fetch Products', () => {
       expect.objectContaining({ name: 'Apagador' }),
       expect.objectContaining({ name: 'Borracha' }),
     ])
+  })
+
+  it('should be able to fetch products by query', async () => {
+    await inMemoryProductsRepository.create(
+      makeProduct({ name: 'Apagador', userId: new UniqueEntityID('user-id') }),
+    )
+    await inMemoryProductsRepository.create(
+      makeProduct({ name: 'Borracha', userId: new UniqueEntityID('user-id') }),
+    )
+    await inMemoryProductsRepository.create(
+      makeProduct({ name: 'Lapis', userId: new UniqueEntityID('user-id') }),
+    )
+    await inMemoryProductsRepository.create(
+      makeProduct({ name: 'Caneta', userId: new UniqueEntityID('user-id') }),
+    )
+
+    const result = await sut.execute({
+      userId: 'user-id',
+      page: 1,
+      query: 'Lapis',
+    })
+
+    expect(result.value?.products).toEqual([
+      expect.objectContaining({ name: 'Lapis' }),
+    ])
+    expect(result.value?.totalCount).toBe(1)
   })
 })

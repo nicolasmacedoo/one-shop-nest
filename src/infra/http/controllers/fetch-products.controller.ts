@@ -47,6 +47,7 @@ export class FetchProductsController {
 
     return {
       products: products.map(ProductPresenter.toHTTP),
+      totalCount: result.value.totalCount,
     }
   }
 }

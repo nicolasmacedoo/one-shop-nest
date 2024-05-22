@@ -26,7 +26,10 @@ export class PrismaProductsRepository implements ProductsRepository {
   async findMany(
     userId: string,
     { page, query }: PaginationParams,
-  ): Promise<Product[]> {
+  ): Promise<{
+    products: Product[]
+    totalCount: number
+  }> {
     const products = await this.prisma.product.findMany({
       where: {
         userId,
@@ -39,7 +42,20 @@ export class PrismaProductsRepository implements ProductsRepository {
       take: 10,
     })
 
-    return products.map(PrismaProductMapper.toDomain)
+    const totalCount = await this.prisma.product.count({
+      where: {
+        userId,
+        name: {
+          contains: query,
+          mode: 'insensitive',
+        },
+      },
+    })
+
+    return {
+      products: products.map(PrismaProductMapper.toDomain),
+      totalCount,
+    }
   }
 
   async create(product: Product): Promise<void> {

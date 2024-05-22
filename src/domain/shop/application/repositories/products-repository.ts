@@ -6,7 +6,7 @@ export abstract class ProductsRepository {
   abstract findMany(
     userId: string,
     params: PaginationParams,
-  ): Promise<Product[]>
+  ): Promise<{ products: Product[]; totalCount: number }>
 
   abstract save(product: Product): Promise<void>
   abstract create(product: Product): Promise<void>

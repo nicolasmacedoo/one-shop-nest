@@ -60,6 +60,7 @@ describe('Fetch Products (E2E)', () => {
         expect.objectContaining({ name: 'Product 2' }),
         expect.objectContaining({ name: 'Product 3' }),
       ]),
+      totalCount: 3,
     })
   })
 })

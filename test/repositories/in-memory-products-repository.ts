@@ -17,14 +17,32 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async findMany(
     userId: string,
-    { page }: PaginationParams,
-  ): Promise<Product[]> {
+    { page, query }: PaginationParams,
+  ): Promise<{
+    products: Product[]
+    totalCount: number
+  }> {
+    const allProducts = this.items.filter(
+      (item) => item.userId.toString() === userId,
+    )
+
     const products = this.items
       .filter((item) => item.userId.toString() === userId)
       .sort((a, b) => a.name.localeCompare(b.name))
       .slice((page - 1) * 10, page * 10)
 
-    return products
+    if (query) {
+      const queryProducts = products.filter((item) => item.name.includes(query))
+      return {
+        products: queryProducts,
+        totalCount: queryProducts.length,
+      }
+    }
+
+    return {
+      products,
+      totalCount: allProducts.length,
+    }
   }
 
   async create(product: Product): Promise<void> {

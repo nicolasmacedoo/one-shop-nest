@@ -13,6 +13,7 @@ type FetchProductsUseCaseResponse = Either<
   null,
   {
     products: Product[]
+    totalCount: number
   }
 >
 
@@ -25,13 +26,17 @@ export class FetchProductsUseCase {
     page,
     query,
   }: FetchProductsUseCaseRequest): Promise<FetchProductsUseCaseResponse> {
-    const products = await this.productsRepository.findMany(userId, {
-      query,
-      page,
-    })
+    const { products, totalCount } = await this.productsRepository.findMany(
+      userId,
+      {
+        query,
+        page,
+      },
+    )
 
     return right({
       products,
+      totalCount,
     })
   }
 }
