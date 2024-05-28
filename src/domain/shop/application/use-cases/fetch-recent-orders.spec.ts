@@ -54,6 +54,7 @@ describe('Fetch Orders', () => {
     })
 
     expect(result.value?.orders).toHaveLength(3)
+    expect(result.value?.totalCount).toBe(3)
     expect(result.value?.orders).toEqual([
       expect.objectContaining({
         createdAt: new Date(2024, 0, 7),
@@ -78,7 +79,7 @@ describe('Fetch Orders', () => {
 
     inMemoryClientsRepository.items.push(client)
 
-    for (let i = 0; i < 22; i++) {
+    for (let i = 0; i < 12; i++) {
       await inMemoryOrdersRepository.create(
         makeOrder({
           createdAt: new Date(2024, 0, i),

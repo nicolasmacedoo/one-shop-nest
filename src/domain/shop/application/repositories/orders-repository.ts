@@ -7,7 +7,10 @@ export abstract class OrdersRepository {
   abstract findManyRecentWithClient(
     userId: string,
     params: PaginationParams,
-  ): Promise<OrderWithClient[]>
+  ): Promise<{
+    orders: OrderWithClient[]
+    totalCount: number
+  }>
 
   abstract findManyRecent(
     userId: string,

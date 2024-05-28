@@ -13,6 +13,7 @@ type FetchRecentOrdersUseCaseResponse = Either<
   null,
   {
     orders: OrderWithClient[]
+    totalCount: number
   }
 >
 
@@ -25,16 +26,15 @@ export class FetchOrdersUseCase {
     page,
     query,
   }: FetchRecentOrdersUseCaseRequest): Promise<FetchRecentOrdersUseCaseResponse> {
-    const orders = await this.ordersRepository.findManyRecentWithClient(
-      userId,
-      {
+    const { orders, totalCount } =
+      await this.ordersRepository.findManyRecentWithClient(userId, {
         page,
         query,
-      },
-    )
+      })
 
     return right({
       orders,
+      totalCount,
     })
   }
 }

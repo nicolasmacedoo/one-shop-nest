@@ -58,10 +58,19 @@ export class PrismaOrdersRepository implements OrdersRepository {
   async findManyRecentWithClient(
     userId: string,
     { page, query }: PaginationParams,
-  ): Promise<OrderWithClient[]> {
+  ): Promise<{
+    orders: OrderWithClient[]
+    totalCount: number
+  }> {
     const orders = await this.prisma.order.findMany({
       where: {
         userId,
+        client: {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -74,7 +83,22 @@ export class PrismaOrdersRepository implements OrdersRepository {
       take: 10,
     })
 
-    return orders.map(PrismaOrderWithClientMapper.toDomain)
+    const totalCount = await this.prisma.order.count({
+      where: {
+        userId,
+        client: {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
+      },
+    })
+
+    return {
+      orders: orders.map(PrismaOrderWithClientMapper.toDomain),
+      totalCount,
+    }
   }
 
   async create(order: Order): Promise<void> {

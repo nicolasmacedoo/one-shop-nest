@@ -43,10 +43,11 @@ export class FetchOrdersController {
       throw new BadRequestException()
     }
 
-    const { orders } = result.value
+    const { orders, totalCount } = result.value
 
     return {
       orders: orders.map(OrderWithClientPresenter.toHTTP),
+      totalCount,
     }
   }
 }

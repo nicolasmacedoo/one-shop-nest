@@ -38,12 +38,19 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
   async findManyRecentWithClient(
     userId: string,
-    { page }: PaginationParams,
-  ): Promise<OrderWithClient[]> {
+    { page, query }: PaginationParams,
+  ): Promise<{
+    orders: OrderWithClient[]
+    totalCount: number
+  }> {
+    const allOrders = this.items.filter(
+      (item) => item.userId.toString() === userId,
+    )
+
     const orders = this.items
       .filter((item) => item.userId.toString() === userId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice((page - 1) * 20, page * 20)
+      .slice((page - 1) * 10, page * 10)
       .map((order) => {
         // const client = this.clientsRepository.findById(order.clientId.toString())
         const client = this.clientsRepository.items.find((client) => {
@@ -62,10 +69,25 @@ export class InMemoryOrdersRepository implements OrdersRepository {
           orderId: order.id,
           orderTotal: order.total,
           createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+          items: order.items.getItems(),
         })
       })
 
-    return orders
+    if (query) {
+      const queryOrders = orders.filter((item) =>
+        item.clientName.includes(query),
+      )
+      return {
+        orders: queryOrders,
+        totalCount: queryOrders.length,
+      }
+    }
+
+    return {
+      orders,
+      totalCount: allOrders.length,
+    }
   }
 
   async save(order: Order): Promise<void> {
