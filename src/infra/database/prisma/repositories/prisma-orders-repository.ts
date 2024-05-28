@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { PrismaOrderMapper } from '../mappers/prisma-order-mapper'
 import { OrderItemsRepository } from '@/domain/shop/application/repositories/order-items-repository'
+import { OrderWithClient } from '@/domain/shop/enterprise/entities/value-objects/order-with-client'
+import { PrismaOrderWithClientMapper } from '../mappers/prisma-order-with-client'
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -30,8 +32,49 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return PrismaOrderMapper.toDomain(order)
   }
 
-  findManyRecent(userId: string, params: PaginationParams): Promise<Order[]> {
-    throw new Error('Method not implemented.')
+  async findManyRecent(
+    userId: string,
+    { page, query }: PaginationParams,
+  ): Promise<Order[]> {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        orderItem: true,
+      },
+      skip: (page - 1) * 10,
+      take: 10,
+    })
+
+    console.log('orders prisma', orders[0].orderItem)
+
+    return orders.map(PrismaOrderMapper.toDomain)
+  }
+
+  async findManyRecentWithClient(
+    userId: string,
+    { page, query }: PaginationParams,
+  ): Promise<OrderWithClient[]> {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        orderItem: true,
+        client: true,
+      },
+      skip: (page - 1) * 10,
+      take: 10,
+    })
+
+    return orders.map(PrismaOrderWithClientMapper.toDomain)
   }
 
   async create(order: Order): Promise<void> {

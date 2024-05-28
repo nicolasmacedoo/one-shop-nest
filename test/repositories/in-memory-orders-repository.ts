@@ -3,11 +3,16 @@ import { PaginationParams } from '@/core/repositories/pagination-params'
 import { OrderItemsRepository } from '@/domain/shop/application/repositories/order-items-repository'
 import { OrdersRepository } from '@/domain/shop/application/repositories/orders-repository'
 import { Order } from '@/domain/shop/enterprise/entities/order'
+import { InMemoryClientsRepository } from './in-memory-clients-repository'
+import { OrderWithClient } from '@/domain/shop/enterprise/entities/value-objects/order-with-client'
 
 export class InMemoryOrdersRepository implements OrdersRepository {
   public items: Order[] = []
 
-  constructor(private orderItemsRepository: OrderItemsRepository) {}
+  constructor(
+    private orderItemsRepository: OrderItemsRepository,
+    private clientsRepository: InMemoryClientsRepository,
+  ) {}
 
   async findById(id: string): Promise<Order | null> {
     const product = this.items.find((item) => item.id, toString() === id)
@@ -27,6 +32,38 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       .filter((item) => item.userId.toString() === userId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20)
+
+    return orders
+  }
+
+  async findManyRecentWithClient(
+    userId: string,
+    { page }: PaginationParams,
+  ): Promise<OrderWithClient[]> {
+    const orders = this.items
+      .filter((item) => item.userId.toString() === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((page - 1) * 20, page * 20)
+      .map((order) => {
+        // const client = this.clientsRepository.findById(order.clientId.toString())
+        const client = this.clientsRepository.items.find((client) => {
+          return client.id.equals(order.clientId)
+        })
+
+        if (!client) {
+          throw new Error(
+            `Client with ID ${order.clientId.toString()} not found for order ${order.id.toString()}`,
+          )
+        }
+
+        return OrderWithClient.create({
+          clientId: order.clientId,
+          clientName: client.name,
+          orderId: order.id,
+          orderTotal: order.total,
+          createdAt: order.createdAt,
+        })
+      })
 
     return orders
   }

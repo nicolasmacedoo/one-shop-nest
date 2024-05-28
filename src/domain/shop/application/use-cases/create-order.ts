@@ -83,6 +83,11 @@ export class CreateOrderUseCase {
 
     this.orderRepository.create(order)
 
+    // fazer algo como promise.all para salvar todos os itens de uma vez
+    // await Promise.all(
+    //   clientsToInsert.map((client) => prisma.client.create({ data: client })),
+    // )
+
     return right({
       order,
     })

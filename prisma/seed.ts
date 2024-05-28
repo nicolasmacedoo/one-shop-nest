@@ -8,11 +8,13 @@ async function main() {
 
   await prisma.client.deleteMany()
   await prisma.product.deleteMany()
+  await prisma.order.deleteMany()
 
   const clientsToInsert: Prisma.ClientUncheckedCreateInput[] = []
 
   for (let i = 0; i <= 50; i++) {
     clientsToInsert.push({
+      id: faker.string.uuid(),
       name: faker.person.fullName(),
       email: faker.internet.email().toLocaleLowerCase(),
       document: faker.string
@@ -27,6 +29,7 @@ async function main() {
 
   for (let i = 0; i <= 50; i++) {
     productsToInsert.push({
+      id: faker.string.uuid(),
       name: faker.commerce.productName(),
       price: faker.commerce
         .price({ dec: 2, min: 1, max: 1000 })
@@ -36,12 +39,40 @@ async function main() {
     })
   }
 
+  const ordersToInsert: Prisma.OrderUncheckedCreateInput[] = []
+
+  for (let i = 0; i <= 10; i++) {
+    ordersToInsert.push({
+      clientId: faker.helpers.arrayElement(clientsToInsert).id!,
+      userId,
+      total: faker.commerce.price({ dec: 2, min: 1, max: 1000 }),
+      orderItem: {
+        create: [
+          {
+            productId: faker.helpers.arrayElement(productsToInsert).id!,
+            quantity: faker.number.int({ min: 1, max: 10 }),
+          },
+        ],
+      },
+    })
+  }
+
+  // await Promise.all([
+  //   clientsToInsert.map((client) => prisma.client.create({ data: client })),
+  //   productsToInsert.map((product) => prisma.product.create({ data: product })),
+  //   ordersToInsert.map((order) => prisma.order.create({ data: order })),
+  // ])
+
   await Promise.all(
     clientsToInsert.map((client) => prisma.client.create({ data: client })),
   )
 
   await Promise.all(
     productsToInsert.map((product) => prisma.product.create({ data: product })),
+  )
+
+  await Promise.all(
+    ordersToInsert.map((order) => prisma.order.create({ data: order })),
   )
 }
 
