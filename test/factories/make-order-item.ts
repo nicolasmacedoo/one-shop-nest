@@ -3,7 +3,10 @@ import {
   OrderItem,
   OrderItemProps,
 } from '@/domain/shop/enterprise/entities/order-item'
+import { PrismaOrderItemMapper } from '@/infra/database/prisma/mappers/prisma-order-item-mapper'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
+import { Injectable } from '@nestjs/common'
 
 export function makeOrderItem(
   override: Partial<OrderItemProps> = {},
@@ -25,4 +28,21 @@ export function makeOrderItem(
     },
     id,
   )
+}
+
+@Injectable()
+export class OrderItemFactory {
+  constructor(private readonly prisa: PrismaService) {}
+
+  async makePrismaOrderItem(
+    data: Partial<OrderItemProps> = {},
+  ): Promise<OrderItemProps> {
+    const orderItem = makeOrderItem(data)
+
+    await this.prisa.orderItem.create({
+      data: PrismaOrderItemMapper.toPersistence(orderItem),
+    })
+
+    return orderItem
+  }
 }
