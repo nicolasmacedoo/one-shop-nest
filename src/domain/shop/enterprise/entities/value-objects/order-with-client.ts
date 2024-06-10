@@ -1,15 +1,17 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ValueObject } from '@/core/entities/value-object'
+import { OrderItem } from '../order-item'
 
 interface OrderWithClientProps {
   orderId: UniqueEntityID
   clientId: UniqueEntityID
   clientName: string
   orderTotal: number
-  items: {
-    productId: UniqueEntityID
-    quantity: number
-  }[]
+  // items: {
+  //   productId: UniqueEntityID
+  //   quantity: number
+  // }[]
+  items: OrderItem[]
   createdAt: Date
   updatedAt?: Date | null
 }
@@ -27,10 +29,13 @@ export class OrderWithClient extends ValueObject<OrderWithClientProps> {
     return this.props.clientName
   }
 
-  get items(): {
-    productId: UniqueEntityID
-    quantity: number
-  }[] {
+  // get items(): {
+  //   productId: UniqueEntityID
+  //   quantity: number
+  // }[] {
+  //   return this.props.items
+  // }
+  get items(): OrderItem[] {
     return this.props.items
   }
 

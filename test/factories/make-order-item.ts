@@ -32,7 +32,7 @@ export function makeOrderItem(
 
 @Injectable()
 export class OrderItemFactory {
-  constructor(private readonly prisa: PrismaService) {}
+  constructor(private readonly prisa: PrismaService) { }
 
   async makePrismaOrderItem(
     data: Partial<OrderItemProps> = {},

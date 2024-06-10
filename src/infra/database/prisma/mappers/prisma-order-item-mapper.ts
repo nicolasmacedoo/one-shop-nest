@@ -5,12 +5,15 @@ import { OrderItem } from '@/domain/shop/enterprise/entities/order-item'
 
 export class PrismaOrderItemMapper {
   public static toDomain(raw: PrismaOrderItem): OrderItem {
-    return OrderItem.create({
-      orderId: new UniqueEntityID(raw.orderId),
-      productId: new UniqueEntityID(raw.productId),
-      price: 12.33,
-      quantity: raw.quantity,
-    })
+    return OrderItem.create(
+      {
+        orderId: new UniqueEntityID(raw.orderId),
+        productId: new UniqueEntityID(raw.productId),
+        price: 12.33,
+        quantity: raw.quantity,
+      },
+      new UniqueEntityID(raw.id),
+    )
   }
 
   public static toPersistence(
@@ -20,6 +23,7 @@ export class PrismaOrderItemMapper {
       orderId: orderItem.orderId.toString(),
       productId: orderItem.productId.toString(),
       quantity: orderItem.quantity,
+      price: orderItem.price,
     }
   }
 }

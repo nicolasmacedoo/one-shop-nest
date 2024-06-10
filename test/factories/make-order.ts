@@ -22,7 +22,7 @@ export function makeOrder(
 
 @Injectable()
 export class OrderFactory {
-  constructor(private readonly prisa: PrismaService) {}
+  constructor(private readonly prisa: PrismaService) { }
 
   async makePrismaOrder(data: Partial<OrderProps> = {}): Promise<Order> {
     const order = makeOrder(data)

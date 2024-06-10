@@ -8,8 +8,10 @@ import { OrderItemsList } from '../../enterprise/entities/order-items-list'
 import { Order } from '../../enterprise/entities/order'
 import { NotAllowedError } from './errors/not-allowed-error'
 import { makeOrderItem } from 'test/factories/make-order-item'
+import { InMemoryClientsRepository } from 'test/repositories/in-memory-clients-repository'
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository
+let inMemoryClientsRepository: InMemoryClientsRepository
 let inMemoryProductsRepository: InMemoryProductsRepository
 let inMemoryOrderItemsRepository: InMemoryOrderItemsRepository
 let sut: EditOrderUseCase
@@ -18,8 +20,10 @@ describe('Edit Order', () => {
   beforeEach(() => {
     inMemoryProductsRepository = new InMemoryProductsRepository()
     inMemoryOrderItemsRepository = new InMemoryOrderItemsRepository()
+    inMemoryClientsRepository = new InMemoryClientsRepository()
     inMemoryOrdersRepository = new InMemoryOrdersRepository(
       inMemoryOrderItemsRepository,
+      inMemoryClientsRepository,
     )
     sut = new EditOrderUseCase(
       inMemoryOrdersRepository,

@@ -13,7 +13,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
   constructor(
     private readonly prisma: PrismaService,
     private readonly orderItemsRepository: OrderItemsRepository,
-  ) {}
+  ) { }
 
   async findById(id: string): Promise<Order | null> {
     const order = await this.prisma.order.findUnique({
@@ -39,6 +39,12 @@ export class PrismaOrdersRepository implements OrdersRepository {
     const orders = await this.prisma.order.findMany({
       where: {
         userId,
+        client: {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -123,8 +129,32 @@ export class PrismaOrdersRepository implements OrdersRepository {
     // await this.orderItemsRepository.createMany(order.items.getItems())
   }
 
-  save(order: Order): Promise<void> {
-    throw new Error('Method not implemented.')
+  async save(order: Order): Promise<void> {
+    const data = PrismaOrderMapper.toPersistence(order)
+
+    await Promise.all([
+      this.prisma.order.update({
+        where: {
+          id: order.id.toString(),
+        },
+        data,
+      }),
+      // this.orderItemsRepository.createMany(order.items.getNewItems()),
+      this.orderItemsRepository.deleteMany(order.items.getRemovedItems()),
+    ])
+
+    // console.log('REMOVED', order.items.getRemovedItems())
+
+    // await this.orderItemsRepository.deleteMany(order.items.getRemovedItems())
+
+    // console.log('DATA PRISMA', data)
+
+    // await this.prisma.order.update({
+    //   where: {
+    //     id: data.id,
+    //   },
+    //   data,
+    // })
   }
 
   delete(order: Order): Promise<void> {

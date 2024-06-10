@@ -12,7 +12,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
   constructor(
     private orderItemsRepository: OrderItemsRepository,
     private clientsRepository: InMemoryClientsRepository,
-  ) {}
+  ) { }
 
   async findById(id: string): Promise<Order | null> {
     const product = this.items.find((item) => item.id, toString() === id)

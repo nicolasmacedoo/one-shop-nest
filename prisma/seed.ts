@@ -1,10 +1,24 @@
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { Prisma, PrismaClient } from '@prisma/client'
+import { hash } from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  const userId = 'e51e209a-c5d3-4629-ab27-1c61582e1a0a'
+  // const userId = 'e51e209a-c5d3-4629-ab27-1c61582e1a0a'
+
+  await prisma.user.deleteMany()
+
+  const user = await prisma.user.create({
+    data: {
+      name: 'Nicolas',
+      email: 'nicolas01@email.com',
+      password: await hash('123456', 8),
+      role: 'ADMIN',
+    },
+  })
+
+  const userId = user.id
 
   await prisma.client.deleteMany()
   await prisma.product.deleteMany()
@@ -51,6 +65,7 @@ async function main() {
           {
             productId: faker.helpers.arrayElement(productsToInsert).id!,
             quantity: faker.number.int({ min: 1, max: 10 }),
+            price: faker.helpers.arrayElement(productsToInsert).price,
           },
         ],
       },

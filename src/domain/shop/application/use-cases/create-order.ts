@@ -30,7 +30,7 @@ export class CreateOrderUseCase {
   constructor(
     private orderRepository: OrdersRepository,
     private productsRepository: ProductsRepository,
-  ) {}
+  ) { }
 
   async execute({
     userId,

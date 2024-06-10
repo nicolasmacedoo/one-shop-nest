@@ -106,9 +106,9 @@ describe('Fetch Orders (E2E)', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       orders: expect.arrayContaining([
-        expect.objectContaining({ client: client.name }),
-        expect.objectContaining({ client: client.name }),
-        expect.objectContaining({ client: client.name }),
+        expect.objectContaining({ clientName: client.name }),
+        expect.objectContaining({ clientName: client.name }),
+        expect.objectContaining({ clientName: client.name }),
       ]),
       totalCount: 3,
     })

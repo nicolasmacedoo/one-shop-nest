@@ -30,6 +30,7 @@ export class PrismaOrderMapper {
         create: order.items.getItems().map((item) => ({
           productId: item.productId.toString(),
           quantity: item.quantity,
+          price: item.price,
         })),
       },
     }

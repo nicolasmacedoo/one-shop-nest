@@ -33,6 +33,8 @@ import { GetUserProfileController } from './controllers/get-user-profile'
 import { GetUserProfileUseCase } from '@/domain/shop/application/use-cases/get-user-profile'
 import { FetchOrdersController } from './controllers/fetch-orders.controller'
 import { FetchOrdersUseCase } from '@/domain/shop/application/use-cases/fetch-recent-orders'
+import { EditOrderController } from './controllers/edit-order.controller'
+import { EditOrderUseCase } from '@/domain/shop/application/use-cases/edit-order'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -51,6 +53,7 @@ import { FetchOrdersUseCase } from '@/domain/shop/application/use-cases/fetch-re
     DeleteClientController,
     CreateOrderController,
     FetchOrdersController,
+    EditOrderController,
     GetUserProfileController,
   ],
   providers: [
@@ -68,7 +71,8 @@ import { FetchOrdersUseCase } from '@/domain/shop/application/use-cases/fetch-re
     DeleteClientUseCase,
     CreateOrderUseCase,
     FetchOrdersUseCase,
+    EditOrderUseCase,
     GetUserProfileUseCase,
   ],
 })
-export class HttpModule {}
+export class HttpModule { }

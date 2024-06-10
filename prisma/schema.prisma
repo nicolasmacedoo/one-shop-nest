@@ -35,7 +35,7 @@ model Product {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  user      User        @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   OrderItem OrderItem[]
 
   @@map("products")
@@ -51,7 +51,7 @@ model Client {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  user  User    @relation(fields: [userId], references: [id])
+  user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   Order Order[]
 
   @@map("clients")
@@ -65,8 +65,8 @@ model Order {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  user      User        @relation(fields: [userId], references: [id])
-  client    Client      @relation(fields: [clientId], references: [id])
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client    Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
   orderItem OrderItem[]
 
   @@map("orders")
@@ -77,11 +77,12 @@ model OrderItem {
   orderId   String    @map("order_id")
   productId String    @map("product_id")
   quantity  Int
+  price     Decimal   @db.Money
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  order   Order   @relation(fields: [orderId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("order_items")
 }

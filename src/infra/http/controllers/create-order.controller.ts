@@ -21,7 +21,7 @@ type CreateOrderBodySchema = z.infer<typeof createOrderBodySchema>
 
 @Controller('/orders')
 export class CreateOrderController {
-  constructor(private readonly createOrder: CreateOrderUseCase) {}
+  constructor(private readonly createOrder: CreateOrderUseCase) { }
 
   @Post()
   async handle(

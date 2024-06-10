@@ -8,6 +8,7 @@ import { OrderItemsList } from '../../enterprise/entities/order-items-list'
 import { NotAllowedError } from './errors/not-allowed-error'
 import { OrderItemsRepository } from '../repositories/order-items-repository'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Injectable } from '@nestjs/common'
 
 interface EditOrderUseCaseRequest {
   userId: string
@@ -26,12 +27,13 @@ type EditOrderUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class EditOrderUseCase {
   constructor(
     private orderRepository: OrdersRepository,
     private orderItemRepository: OrderItemsRepository,
     private productsRepository: ProductsRepository,
-  ) {}
+  ) { }
 
   async execute({
     userId,
@@ -51,6 +53,8 @@ export class EditOrderUseCase {
 
     const currentOrderItems =
       await this.orderItemRepository.findManyByOrderId(orderId)
+
+    console.log('CURRENT', currentOrderItems)
 
     const orderItemstList = new OrderItemsList(currentOrderItems)
 
@@ -81,7 +85,15 @@ export class EditOrderUseCase {
 
     order.clientId = new UniqueEntityID(clientId)
 
+    order.total = orderItemstList
+      .getItems()
+      .reduce((acc, item) => (acc += item.price * item.quantity), 0)
+
+    // await this.orderItemRepository.deleteMany(orderItemstList.getRemovedItems())
+
     await this.orderRepository.save(order)
+
+    // console.log('ORDER USE CASE', order.items.getItems())
 
     return right({
       order,
