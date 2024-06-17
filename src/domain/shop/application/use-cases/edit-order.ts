@@ -33,7 +33,7 @@ export class EditOrderUseCase {
     private orderRepository: OrdersRepository,
     private orderItemRepository: OrderItemsRepository,
     private productsRepository: ProductsRepository,
-  ) { }
+  ) {}
 
   async execute({
     userId,

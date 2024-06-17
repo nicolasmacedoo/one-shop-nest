@@ -6,7 +6,7 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 
 @Controller('/users/profile')
 export class GetUserProfileController {
-  constructor(private readonly getUserProfile: GetUserProfileUseCase) { }
+  constructor(private readonly getUserProfile: GetUserProfileUseCase) {}
 
   @Get()
   async handle(@CurrentUser() userSession: UserPayload) {

@@ -25,7 +25,7 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
 @Controller('/orders')
 export class FetchOrdersController {
-  constructor(private readonly fetchOrders: FetchOrdersUseCase) { }
+  constructor(private readonly fetchOrders: FetchOrdersUseCase) {}
 
   @Get()
   async handle(

@@ -19,7 +19,7 @@ type FetchRecentOrdersUseCaseResponse = Either<
 
 @Injectable()
 export class FetchOrdersUseCase {
-  constructor(private readonly ordersRepository: OrdersRepository) { }
+  constructor(private readonly ordersRepository: OrdersRepository) {}
 
   async execute({
     userId,

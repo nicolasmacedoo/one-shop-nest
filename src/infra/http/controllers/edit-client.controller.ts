@@ -25,7 +25,7 @@ type EditClientBodySchema = z.infer<typeof editClientBodySchema>
 
 @Controller('/clients/:id')
 export class EditClientController {
-  constructor(private readonly editClientUseCase: EditClientUseCase) { }
+  constructor(private readonly editClientUseCase: EditClientUseCase) {}
 
   @Put()
   @HttpCode(204)

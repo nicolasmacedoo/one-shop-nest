@@ -75,4 +75,4 @@ import { EditOrderUseCase } from '@/domain/shop/application/use-cases/edit-order
     GetUserProfileUseCase,
   ],
 })
-export class HttpModule { }
+export class HttpModule {}

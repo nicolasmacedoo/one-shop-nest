@@ -13,7 +13,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
   constructor(
     private readonly prisma: PrismaService,
     private readonly orderItemsRepository: OrderItemsRepository,
-  ) { }
+  ) {}
 
   async findById(id: string): Promise<Order | null> {
     const order = await this.prisma.order.findUnique({

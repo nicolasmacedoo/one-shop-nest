@@ -6,7 +6,7 @@ import { PrismaOrderItemMapper } from '../mappers/prisma-order-item-mapper'
 
 @Injectable()
 export class PrismaOrderItemsRepository implements OrderItemsRepository {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async createMany(orderItems: OrderItem[]): Promise<void> {
     if (orderItems.length === 0) {

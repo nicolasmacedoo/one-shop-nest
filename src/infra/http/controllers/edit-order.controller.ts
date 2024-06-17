@@ -28,7 +28,7 @@ type EditOrderSchema = z.infer<typeof editOrderBodySchema>
 
 @Controller('/orders/:id')
 export class EditOrderController {
-  constructor(private readonly editOrderUseCase: EditOrderUseCase) { }
+  constructor(private readonly editOrderUseCase: EditOrderUseCase) {}
 
   @Put()
   @HttpCode(204)
